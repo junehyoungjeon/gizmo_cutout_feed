@@ -1,0 +1,19 @@
+./*.o *~
+GIZMO
+cooling/*.o *~
+eos/*.o *~
+eos/helmholtz/*.o *~
+galaxy_sf/*.o *~
+galaxy_sf/blackholes/*.o *~
+gravity/*.o *~
+hydro/*.o *~
+nuclear/*.o *~
+radiation/*.o *~
+scripts/*.o *~
+scripts/visit/*.o *~
+sidm/*.o *~
+solids/*.o *~
+structure/*.o *~
+system/*.o *~
+turb/*.o *~
+

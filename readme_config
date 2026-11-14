@@ -1,0 +1,3 @@
+Config_original what Boyuan origianlly had in this gizmo zip
+Config_old edited Config_original compared to what was used in paper 2, changed DCBH metal threshold to 2e-4 from 1e-4
+Config_new edited Config_origianl with what was in gizmo in FDzoom_Hseed, not in gizmo_old

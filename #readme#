@@ -1,0 +1,9 @@
+0;10;1c0;10;1cedited in 0729 to have no UVB rs in bhrun.param and in gizmo.slurm to go only for 4 hours to see how many dcbhs will form.
+
+
+for the zoom case, set UVB_ADPT=0 in config and set zoominfactor in param and stars did form.
+
+
+bhrun_boyuan and gizmo_boyuan used to test the original box on lonestar
+
+This folder under seeding created to see dcbh formation under regular. 17 formed unlike boosted bondi or allswallow where 1 to no DCBH formed

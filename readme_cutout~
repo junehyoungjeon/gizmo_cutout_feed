@@ -1,0 +1,21 @@
+
+
+for allvars.h, begrun.c, init.c, and run.c, removed the condition (defined(BLACK_HOLES) && (!defined(BH_BL))) for fof bhs, which is not necessary in cutouts
+
+
+cutout_lowr changed softening length from 100 physical units to 0.1 physical units
+1e-5 comoving kpc?
+
+
+Had turned of bh swallowgas. Next test turning it on? 02/26/26
+
+03/01/26
+changed blackhole_local.h and allvars.h for some struct to have parentID attribute even when BLACK_HOLES is turned on. Originally, only when GALSF was on this attribute was defined.
+In config, turned on bh swallow gas and turned off BH_DF_GAS to use in cutouts
+
+
+from cutout_lowr_2, used this setting with swallow and no gas df but change seemed minimal
+
+
+04/08/26
+Realized that cutout had feedback from bh accretion. Copied used Config.sh to Config_feed.sh to keep version with feedback. Turned of BH_BONDI, BH_SWALLOWGAS and BH_FEEDBACK in the config file.

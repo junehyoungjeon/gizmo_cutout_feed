@@ -1,0 +1,43 @@
+Transition temperature: 2320991 K
+Eddington rate: 2.7053384179952096e-06 (MBH/(100 Msun)) [Msun yr^-1]
+Nion = 3.141935938018033e+55 s^-1 [Mdot/(Msun yr^-1)]
+MBH = 10^3 Msun
+Lion fit parameters: slope: 1.002, norm: 1.5430152678412271e+41
+Nion fit parameters: slope: 0.984, norm: 7.2930340220502736e+50
+LLW fit parameters: slope: 0.856, norm: 1.441482676015613e+38
+NLW fit parameters: slope: 0.856, norm: 7.238663745475003e+48
+MBH = 10^5 Msun
+Lion fit parameters: slope: 1.004, norm: 1.5237146328577788e+43
+Nion fit parameters: slope: 0.954, norm: 7.96975485480733e+52
+LLW fit parameters: slope: 0.809, norm: 2.9692578186494326e+40
+NLW fit parameters: slope: 0.809, norm: 1.495039513892546e+51
+MBH = 10^7 Msun
+Lion fit parameters: slope: 1.020, norm: 1.488110702865475e+45
+Nion fit parameters: slope: 0.940, norm: 9.638081870663254e+54
+LLW fit parameters: slope: 0.717, norm: 7.028308839042362e+42
+NLW fit parameters: slope: 0.717, norm: 3.5422569234147824e+53
+MBH = 10^9 Msun
+Lion fit parameters: slope: 1.057, norm: 1.3460214168255394e+47
+Nion fit parameters: slope: 1.081, norm: 1.1659417189806979e+57
+LLW fit parameters: slope: 0.699, norm: 2.4978474207563702e+45
+NLW fit parameters: slope: 0.698, norm: 1.260374087888173e+56
+eta = 0.0001
+Lion fit parameters: slope: 0.956, norm: 2.11299665555295e+34
+Nion fit parameters: slope: 0.965, norm: 1.444652055757274e+44
+LLW fit parameters: slope: 1.297, norm: 8.414195139294648e+30
+NLW fit parameters: slope: 1.297, norm: 4.2320502147945196e+41
+eta = 0.01
+Lion fit parameters: slope: 0.986, norm: 1.7199457627674316e+36
+Nion fit parameters: slope: 1.053, norm: 5.393542889033596e+45
+LLW fit parameters: slope: 1.246, norm: 4.828973236055308e+32
+NLW fit parameters: slope: 1.246, norm: 2.4275697720533715e+43
+eta = 1
+Lion fit parameters: slope: 0.997, norm: 1.5780437899183252e+38
+Nion fit parameters: slope: 1.036, norm: 5.511806760030963e+47
+LLW fit parameters: slope: 1.188, norm: 3.457813980833945e+34
+NLW fit parameters: slope: 1.188, norm: 1.7328755617391833e+45
+eta = 100
+Lion fit parameters: slope: 0.996, norm: 1.636190413439448e+40
+Nion fit parameters: slope: 1.035, norm: 4.503695920085094e+49
+LLW fit parameters: slope: 1.129, norm: 3.5434808780955614e+36
+NLW fit parameters: slope: 1.129, norm: 1.7769231437532119e+47

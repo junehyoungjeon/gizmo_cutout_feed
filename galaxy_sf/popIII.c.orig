@@ -1,0 +1,320 @@
+#include <mpi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <sys/stat.h>
+#include <gsl/gsl_math.h>
+#include "../allvars.h"
+#include "../proto.h"
+#include "../kernel.h"
+#ifdef OMP_NUM_THREADS
+#include <pthread.h>
+#endif
+
+#if defined(POPIII) && defined(GALSF) && defined(METALS)
+
+//ergs per event
+#define ENERGY_TYPE2 1.0e51
+#define ENERGY_PISN  1.0e52
+#define ENERGY_BH    0.0
+#define ENERGY_OTHER 0.0
+
+// Bubble properties 
+#define I_FRONT_RAD 2.0     //kpc/h PHYSICAL
+#define TEMP_BUBBLE 10.0e4  //Kelvin
+#define E_FRAC_BUBBLE 0.10  //n_e/n_H
+
+// yield per type of SN event
+#define YIELD_TYPE2 0.10
+#define YIELD_PISN  0.50
+#define YIELD_BH    0.0
+#define YIELD_OTHER 0.0
+
+#define LOWER 1.0     //lower limit to IMF
+#define UPPER 150.0   //upper limit to IMF
+#define DM 0.1        //dM for IMF table
+//#define N_VALS 1490   //(UPPER-LOWER)/DM
+#define N_VALS (int)((UPPER-LOWER)/DM)
+
+static double prob[N_VALS];
+static double masses[N_VALS];
+double trap(double (*fm)(double, double, double),int, double, double, double, double);  //trapezoidal integration for m-larson imf
+double fm(double, double, double); //m-larson function (mass)
+double fn(double, double, double); //m-larson function (number)
+
+void InitLegacy(){
+  int i;
+  double IMF_norm, N,sum=0.0, M1,M2;
+
+  srand48(ThisTask);
+  
+  double Msun_to_Internal  = All.HubbleParam * SOLAR_MASS / All.UnitMass_in_g;
+  //double Upper = UPPER * Msun_to_Internal;
+  //double Lower = LOWER * Msun_to_Internal;
+  //double dm    = DM * Msun_to_Internal;
+  
+  All.PopIII_Mass = POPIII_MASS * Msun_to_Internal;
+
+  // if power-law IMF mcut=0.0 ==> exp(term)=1.0 in fn() and fm()
+  #ifndef POPIII_MLARSON
+  double POPIII_MCUT=0.0;
+  #endif
+
+  //normalize the IMF 
+  IMF_norm = All.PopIII_Mass / Msun_to_Internal / trap(fm,1000,LOWER,UPPER,POPIII_ALPHA,POPIII_MCUT);
+  N = IMF_norm * trap(fn,1000,LOWER,UPPER,POPIII_ALPHA,POPIII_MCUT);
+  
+
+  //create the CDF from IMF
+  for(i=0; i<N_VALS-1; i++){
+    M1 = LOWER+DM*i;
+    M2 = LOWER+DM*(i+1);
+
+    masses[i] = M1 * Msun_to_Internal;
+    sum += (IMF_norm * trap(fn,1000,M1,M2,POPIII_ALPHA,POPIII_MCUT)) / N;
+    prob[i] = sum;
+  }
+  masses[N_VALS-1] = UPPER * Msun_to_Internal;
+  prob[N_VALS-1] = 1.0;
+
+  if(ThisTask==0){
+    printf("\n");
+    printf("POPIII gasM %e\n",All.OrigGasMass);
+    printf("POPIII Mass %e\n",All.PopIII_Mass);
+    printf("POPIII Norm %e\n",IMF_norm);
+    printf("POPIII N    %e\n",N);
+    printf("\n");   
+    fflush(stdout);
+  }
+  
+}
+
+
+//linearly interpolate
+double GetMass(int i){
+  int n,k=0;
+  double rand, di, mu;
+
+  rand = drand48();
+  
+  for(n=0; n<N_VALS-1; n++){
+    if(rand >= prob[n] && rand < prob[n+1]){
+      k = n;
+      break;
+    }
+  }
+
+  di = prob[k+1] - prob[k];
+  mu = (rand - prob[k])/di;
+  
+  return (masses[k] * (1.0-mu) + masses[k+1]*mu);
+}
+
+//trapezoidal integration
+double trap(double (*f)(double, double, double),int N, double a, double b, double alpha, double mcut)
+{
+   double sum=0.0;
+   int i=0;
+   double start=a;
+   double step=(b-a)/N;
+   for(i=0; i<N; i++)
+   {
+      sum+=(f(start+i*step,alpha,mcut)+f(start+(i+1)*step,alpha,mcut))*step/2.;
+   }
+
+   return sum;
+}
+
+// imf function (mass)
+double fm (double x,double alpha,double mcut)
+{ 
+   return x*pow(x,-1.*alpha)*exp(-1.*mcut/(x*x));             
+} 
+
+// imf function (number)
+double fn (double x,double alpha,double mcut)
+{ 
+   return pow(x,-1.*alpha)*exp(-1.*mcut/(x*x));               
+}
+
+void Legacy_PopIII(int i){
+
+  double radius, radiusI, log_radius;
+  int n, j, numngb, numngbI, startnode, dummy;
+  double sumwk=0.0, norm_j;
+  double Msun_to_Internal  = All.HubbleParam * SOLAR_MASS / All.UnitMass_in_g;
+  double massj_fact, meanweight, energy_increase;
+  double ufac = All.UnitPressure_in_cgs/All.UnitDensity_in_cgs;
+  double densfac = All.UnitDensity_in_cgs * All.HubbleParam * All.HubbleParam * All.cf_a3inv;
+  
+  MyFloat *Ngbweight;
+
+  /* VALUES TO DISTRIBUTE */
+  double sum=0.0, ran_mass=0.0;
+  int N_Type2 = 0,N_PISN = 0,N_BH = 0,N_Other = 0;
+  double Mass_Type2=0.0,Mass_PISN=0.0,Mass_BH=0.0,Mass_Other=0.0;
+  do{
+    ran_mass = GetMass(i);
+
+    if(ran_mass < 8.0*Msun_to_Internal){
+      N_Other += 1;
+      Mass_Other += ran_mass;
+    }
+    else if(8.0*Msun_to_Internal <= ran_mass && ran_mass < 40.0*Msun_to_Internal){
+      N_Type2 += 1;
+      Mass_Type2 += ran_mass;
+    }
+    else if(40.0*Msun_to_Internal <= ran_mass && ran_mass < 140.0*Msun_to_Internal){
+      N_BH += 1;
+      Mass_BH += ran_mass;
+    }
+    else{
+      N_PISN += 1;
+      Mass_PISN += ran_mass;
+    }    
+    sum += ran_mass;
+  }while(sum < All.PopIII_Mass);
+
+  printf("POPIII %e %e %e %e %e %e %e\n",
+         Mass_Other,Mass_Type2,Mass_BH,Mass_PISN,sum,All.PopIII_Mass,Msun_to_Internal);
+  fflush(stdout);
+  
+  //sum up energy
+  double total_energy = 0.0;
+  total_energy += N_Type2 * ENERGY_TYPE2;
+  total_energy += N_PISN  * ENERGY_PISN;
+  total_energy += N_BH    * ENERGY_BH;
+  total_energy += N_Other * ENERGY_OTHER;
+  total_energy /= All.UnitEnergy_in_cgs;
+
+  //sum up mass
+  double total_metal_mass = 0.0;
+  total_metal_mass += Mass_Type2 * YIELD_TYPE2;
+  total_metal_mass += Mass_PISN  * YIELD_PISN;
+  total_metal_mass += Mass_BH    * YIELD_BH;
+  total_metal_mass += Mass_Other * YIELD_OTHER;
+
+  //determine radius
+  //radius  = 1.0;       //kpc/h PHYSICAL
+  log_radius = -17.02 + 0.383 * log10(total_energy*All.UnitEnergy_in_cgs); //fitting formula from Jaacks+2016 in [pc/h] physical 
+  radius = pow(10,log_radius) / 1000.;
+  radius /= All.Time;  //to    COMOVING
+
+  /* NEIGHBOR STUFF */
+  Ngblist = (int *) mymalloc("popIII neighbor list",NumPart * sizeof(int));
+  Ngbweight = (MyFloat *) mymalloc("popIII neighbor weights",NumPart * sizeof(MyFloat));
+  
+  startnode = All.MaxPart;
+  numngb = ngb_treefind_variable_threads(P[i].Pos, radius, -1, &startnode, 0, &dummy, &dummy, &dummy, Ngblist);
+
+  //weight by a kernel, otherwise distribute evenly
+#ifdef POPIII_KERNEL_DIST
+  double wk=0.0, dwk=0.0;
+  double dx,dy,dz,ngb_r2,r2,u,rinv4,rinv3;
+  double radius_squared = radius*radius;
+
+  //loop through neighbors and calculate kernel contribution
+  for( n=0; n<numngb; n++ ){
+    j = Ngblist[n];  //index of neighbor n
+
+    dx = P[i].Pos[0] - P[j].Pos[0];
+    dy = P[i].Pos[1] - P[j].Pos[1];
+    dz = P[i].Pos[2] - P[j].Pos[2];
+#ifdef PERIODIC   /*  distance to the closest image in the given box size  */
+    NEAREST_XYZ(dx,dy,dz,1);
+#endif
+                                                
+    ngb_r2 = dx*dx + dy*dy + dz*dz;
+    r2 = radius_squared;
+    
+    u = sqrt(ngb_r2/r2);
+    rinv4 = 1/(r2*r2);
+    rinv3 = rinv4*radius;
+    kernel_main(u, rinv3, rinv4, &wk, &dwk, -1);
+    sumwk += wk;
+    Ngbweight[n] = wk;
+  }
+#else
+  for( n=0; n<numngb; n++ )
+    Ngbweight[n] = 1.0;
+  sumwk = (double)numngb;
+#endif
+
+  
+  //loop through neighbors and give METAL feedback
+  for( n=0; n<numngb; n++){
+      j = Ngblist[n];
+      norm_j = Ngbweight[n]/sumwk;
+
+      // Metals  
+      massj_fact = 1./(P[j].Mass+total_metal_mass * norm_j);
+      P[j].Metallicity[0] = (P[j].Mass * P[j].Metallicity[0] + total_metal_mass) * massj_fact;
+      
+      // Temperature - converting temperature to energy to add to each particle. Not weighted.
+      meanweight = 4. / (1 + 3 * HYDROGEN_MASSFRAC);
+      energy_increase = 1. / meanweight * (1.0 / GAMMA_MINUS1) * (BOLTZMANN / PROTONMASS) * TEMP_BUBBLE * P[j].Mass * All.UnitMass_in_g;
+      SphP[j].InternalEnergy += energy_increase / All.UnitEnergy_in_cgs / P[j].Mass;
+      
+      /* not sure if this is needed but seems to be done each time feedback 
+      is implemented (i.e. metals.c) to update the electron abundance */
+      convert_u_to_temp(SphP[j].InternalEnergy*ufac, Particle_density_for_energy_i(j)*densfac,&SphP[j].Ne,j);
+
+      // Metals
+      massj_fact = 1./(P[j].Mass+total_metal_mass * norm_j);
+      P[j].Metallicity[0] = (P[j].Mass * P[j].Metallicity[0] + total_metal_mass) * massj_fact;
+  }
+
+  myfree(Ngbweight);
+  myfree(Ngblist);  
+
+
+  //Determine neighbors for fixed thermal radius defined above. No weighting
+  Ngblist = (int *) mymalloc("popIII neighbor list",NumPart * sizeof(int));
+  
+  radiusI = I_FRONT_RAD / All.Time;  //to COMOVING
+  numngbI = ngb_treefind_variable_threads(P[i].Pos, radius, -1, &startnode, 0, &dummy, &dummy, &dummy, Ngblist);
+  
+  //loop through neighbors and give THERMAL feedback
+  for( n=0; n<numngb; n++){
+      j = Ngblist[n];
+      
+      // Temperature - converting temperature to energy to add to each particle
+      meanweight = 4. / (1 + 3 * HYDROGEN_MASSFRAC);
+      energy_increase = 1. / meanweight * (1.0 / GAMMA_MINUS1) * (BOLTZMANN / PROTONMASS) * TEMP_BUBBLE * P[j].Mass * All.UnitMass_in_g;
+      SphP[j].InternalEnergy += energy_increase / All.UnitEnergy_in_cgs / P[j].Mass;
+      
+      /* not sure if this is needed but seems to be done each time feedback 
+      is implemented (i.e. metals.c) to update the electron abundance */
+      convert_u_to_temp(SphP[j].InternalEnergy*ufac, Particle_density_for_energy_i(j)*densfac,&SphP[j].Ne,j);
+
+      
+      // Ionization fraction
+      //SphP[j].Ne = E_FRAC_BUBBLE;
+  }
+
+  myfree(Ngblist); 
+
+  //write to output, each processor has own output file
+  FILE *FdPopIII;
+  char buf[200];
+  sprintf(buf, "%sPopIII", All.OutputDir);
+  mkdir(buf, 02755);
+  sprintf(buf, "%sPopIII/popIII.%d.txt", All.OutputDir, ThisTask);
+  if(!(FdPopIII = fopen(buf, "a"))){
+    printf("error in opening file '%s'\n",buf);
+    endrun(1);
+  }
+  
+  /* #ngb #ngbI  #OTHER #Type2 #BH #PISN  Etot  Mmass  radius  z */
+  fprintf(FdPopIII,"%d %d %d %d %d %d %e %e %e %e %e\n",
+          numngb,numngbI,N_Other,N_Type2,N_BH,N_PISN,
+          total_energy * All.UnitEnergy_in_cgs,  //ergs
+          total_metal_mass / Msun_to_Internal,     //Msun
+          radius * All.Time,radiusI * All.Time,                     //PHYSICAL kpc/h
+          1./All.Time - 1.);
+  fflush(FdPopIII);
+
+}
+
+#endif

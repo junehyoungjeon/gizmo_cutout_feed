@@ -1,0 +1,321 @@
+allvar.h:
+
+global variables:
+921:
+#define BH_COUNTPROGS
+/* carries a counter for each BH that gives the total number of seeds that merged into it */
+#define BH_ENFORCE_EDDINGTON_LIMIT
+/* put a hard limit on the maximum accretion rate (set BlackHoleEddingtonFactor>>1 to allow super-eddington) */
+extern double TimeBin_BH_mass[TIMEBINS];
+extern double TimeBin_BH_dynamicalmass[TIMEBINS];
+extern double TimeBin_BH_Mdot[TIMEBINS];
+extern double TimeBin_BH_Medd[TIMEBINS];
+
+989:
+#if defined(BLACK_HOLES) && defined(DETACH_BLACK_HOLES)
+extern int N_BHs;
+#endif
+
+1127:
+#ifdef BLACK_HOLES
+extern FILE *FdBlackHoles;	/*!< file handle for blackholes.txt log-file. */
+extern FILE *FdBlackHolesDetails;
+#ifdef BH_OUTPUT_MOREINFO
+extern FILE *FdBhMergerDetails;
+#ifdef BH_BAL_KICK
+extern FILE *FdBhWindDetails;
+#endif
+#endif
+#endif
+
+struct global_data_all_processes:
+1171:
+#ifdef BLACK_HOLES
+  int TotBHs;
+#if defined(DETACH_BLACK_HOLES)
+  int MaxPartBH;
+  double BHfactor;
+#endif
+#endif
+1661: (probably useless !!!)
+#if defined(BLACK_HOLES) || defined(GALSF_SUBGRID_VARIABLEVELOCITY)
+  double TimeNextOnTheFlyFoF;
+  double TimeBetOnTheFlyFoF;
+#ifdef FOFRAD
+  double TimeNextOnTheFlyFoFRAD;
+#endif
+#endif
+
+1669:
+#ifdef BLACK_HOLES
+  double BlackHoleAccretionFactor;	/*!< Fraction of BH bondi accretion rate */
+  double BlackHoleFeedbackFactor;	/*!< Fraction of the black luminosity feed into thermal feedback */
+  double SeedBlackHoleMass;         /*!< Seed black hole mass */
+  double SeedBlackHoleMassSigma;    /*!< Standard deviation of init black hole masses */
+  double SeedBlackHoleMinRedshift; /*!< Minimum redshift where BH seeds are allowed */
+#ifdef BH_ALPHADISK_ACCRETION
+  double SeedAlphaDiskMass;         /*!< Seed alpha disk mass */
+#endif
+  double MinFoFMassForNewSeed;      /*!< Halo mass required before new seed is put in */ !!!
+  double BlackHoleNgbFactor;        /*!< Factor by which the SPH neighbour should be increased/decreased */
+  double BlackHoleMaxAccretionRadius;
+  double BlackHoleEddingtonFactor;	/*!< Factor above Eddington */
+  double BlackHoleRadiativeEfficiency;  /**< Radiative efficiency determined by the spin value, default value is 0.1 */
+#ifdef FOF !!!
+  double massDMpart;
+#endif
+#ifdef MODIFIEDBONDI
+  double BlackHoleRefDensity;
+  double BlackHoleRefSoundspeed;
+#endif
+#endif
+
+ALIGN(32) struct particle_data:
+1949:
+#if defined(BLACK_HOLES)
+    MyIDType SwallowID;
+    int IndexMapToTempStruc;   /*!< allows for mapping to BlackholeTempInfo struc */
+
+#if !defined(DETACH_BLACK_HOLES)
+#ifdef BH_COUNTPROGS
+    int BH_CountProgs;
+#endif
+    MyFloat BH_Mass;
+#ifdef BH_ALPHADISK_ACCRETION
+    MyFloat BH_Mass_AlphaDisk;
+#endif
+    MyFloat BH_Mdot;
+    int BH_TimeBinGasNeighbor;
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
+    MyFloat BH_disk_hr;
+#endif
+#ifdef BH_BUBBLES
+    MyFloat BH_Mass_bubbles;
+    MyFloat BH_Mass_ini;
+#ifdef UNIFIED_FEEDBACK
+    MyFloat BH_Mass_radio;
+#endif
+#endif
+#ifdef BH_BUBBLES
+    union
+    {
+        MyFloat BH_accreted_BHMass_bubbles;
+        MyLongDouble dBH_accreted_BHMass_bubbles;
+    } b7;
+#ifdef UNIFIED_FEEDBACK
+    union
+    {
+        MyFloat BH_accreted_BHMass_radio;
+        MyLongDouble dBH_accreted_BHMass_radio;
+    } b8;
+#endif
+#endif
+#endif  /* if !defined(DETACH_BLACK_HOLES) */
+#endif  /* if defined(BLACK_HOLES) */
+
+2046:
+#if defined(DETACH_BLACK_HOLES)
+    union
+    {
+        unsigned int BHID;
+        unsigned int MetID;
+    } pt;
+#endif
+
+data structures for BHs:
+2082:
+#if defined(BLACK_HOLES)
+#if defined(DETACH_BLACK_HOLES)
+#define BPP(i) BHP[P[(i)].pt.BHID]
+extern struct bh_particle_data
+{
+  MyIDType PID;
+#ifdef BH_COUNTPROGS
+  int BH_CountProgs;
+#endif
+  MyFloat BH_Mass;
+  MyFloat BH_Mdot;
+#ifdef BH_ALPHADISK_ACCRETION
+  MyFloat BH_Mass_AlphaDisk;
+#endif
+  int     BH_TimeBinGasNeighbor;
+#ifdef BH_BUBBLES
+  MyFloat BH_Mass_bubbles;
+  MyFloat BH_Mass_ini;
+#ifdef UNIFIED_FEEDBACK
+  MyFloat BH_Mass_radio;
+#endif
+#endif
+#ifdef BH_BUBBLES
+  union
+  {
+    MyFloat BH_accreted_BHMass_bubbles;
+    MyLongDouble dBH_accreted_BHMass_bubbles;
+  } b7;
+#ifdef UNIFIED_FEEDBACK
+  union
+  {
+    MyFloat BH_accreted_BHMass_radio;
+    MyLongDouble dBH_accreted_BHMass_radio;
+  } b8;
+#endif
+#endif
+}
+  *BHP,
+  *DomainBHBuf;
+#else
+#define BPP(i) P[(i)]
+#endif
+#endif
+
+2549:
+#ifdef BLACK_HOLES
+#define BHPOTVALUEINIT 1.0e30
+extern int N_active_loc_BHs;    /*!< number of active black holes on the LOCAL processor */
+extern struct blackhole_temp_particle_data       // blackholedata_topass
+{
+    MyIDType index;
+    MyFloat BH_InternalEnergy;
+    MyLongDouble accreted_Mass;
+    MyLongDouble accreted_BH_Mass;
+    MyLongDouble accreted_momentum[3];
+    MyLongDouble Mgas_in_Kernel;
+    MyLongDouble Malt_in_Kernel;
+    MyLongDouble Jalt_in_Kernel[3];
+#ifdef BH_GRAVACCRETION_BTOD
+    MyLongDouble Mbulge_in_Kernel;
+#endif
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(BH_BAL_KICK_COLLIMATED) || defined(BH_GRAVACCRETION)  
+    MyLongDouble Jgas_in_Kernel[3];
+#endif
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
+    MyLongDouble GradRho_in_Kernel[3];
+    MyFloat BH_angle_weighted_kernel_sum;
+#endif
+#ifdef BH_DYNFRICTION
+    MyFloat DF_mean_vel[3];
+    MyFloat DF_rms_vel;
+    MyFloat DF_mmax_particles;
+#endif
+#if defined(BH_BONDI) || defined(BH_DRAG)
+    MyFloat BH_SurroundingGasVel[3];
+#endif
+#if defined(BH_ALPHADISK_ACCRETION)
+    MyFloat mdot_alphadisk;             /*!< gives mdot of mass going into alpha disk */
+#endif
+#if defined(BH_GRAVCAPTURE_GAS)
+    MyFloat mass_to_swallow_edd;        /*!< gives the mass we want to swallow that contributes to eddington */
+#endif
+}
+*BlackholeTempInfo, *BlackholeDataPasserResult, *BlackholeDataPasserOut;
+#endif
+
+
+allvars.c:
+110, 156, 266, 322, 361
+
+
+init.c:
+int count_holes = 0; (39)
+set up All.TimeNextOnTheFlyFoF... (205-227) !!!
+initialize BH info... (606-628) // with in the loop through all particles (340-629)
+MPI_Allreduce(&count_holes, &All.TotBHs, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD); (632)
+set up softening... (1209-1216)
+
+
+begrun.c:
+All.BlackHoleMaxAccretionRadius = all.BlackHoleMaxAccretionRadius; (283)
+set up All.TimeNextOnTheFly[FoF/FoFRAD]... (329) !!!
+void open_outputfiles(void):
+	open BH info files... (533-565)
+	open blackholes.txt... (814-821)
+void close_outputfiles(void):
+	868-876, 916 (see above)
+	
+void read_parameter_file(char *fname):
+"TimeBetOnTheFlyFoF" -> All.TimeBetOnTheFlyFoF (1491-1495) !!!
+#ifdef BLACK_HOLES
+#ifdef DETACH_BLACK_HOLES
+      strcpy(tag[nt], "BHFormationFactor");
+      addr[nt] = &All.BHfactor;
+      id[nt++] = REAL;
+#endif
+      strcpy(tag[nt], "BlackHoleAccretionFactor");
+      addr[nt] = &All.BlackHoleAccretionFactor;
+      id[nt++] = REAL;
+
+      strcpy(tag[nt], "BlackHoleEddingtonFactor");
+      addr[nt] = &All.BlackHoleEddingtonFactor;
+      id[nt++] = REAL;
+
+      strcpy(tag[nt], "SeedBlackHoleMass");
+      addr[nt] = &All.SeedBlackHoleMass;
+      id[nt++] = REAL;  
+#ifdef FOF !!!
+      strcpy(tag[nt], "SeedBlackHoleMassSigma");
+      addr[nt] = &All.SeedBlackHoleMassSigma;
+      id[nt++] = REAL;
+      strcpy(tag[nt], "SeedBlackHoleMinRedshift");
+      addr[nt] = &All.SeedBlackHoleMinRedshift;
+      id[nt++] = REAL;
+#endif
+#ifdef BH_ALPHADISK_ACCRETION
+      strcpy(tag[nt], "SeedAlphaDiskMass");
+      addr[nt] = &All.SeedAlphaDiskMass;
+      id[nt++] = REAL;
+#endif  
+      strcpy(tag[nt], "MinFoFMassForNewSeed");
+      addr[nt] = &All.MinFoFMassForNewSeed;
+      id[nt++] = REAL;
+
+      strcpy(tag[nt], "BlackHoleNgbFactor");
+      addr[nt] = &All.BlackHoleNgbFactor;
+      id[nt++] = REAL;
+
+      strcpy(tag[nt], "BlackHoleMaxAccretionRadius");
+      addr[nt] = &All.BlackHoleMaxAccretionRadius;
+      id[nt++] = REAL;
+
+      strcpy(tag[nt], "BlackHoleRadiativeEfficiency");
+      addr[nt] = &All.BlackHoleRadiativeEfficiency;
+      id[nt++] = REAL;
+#ifdef FOF !!!
+      strcpy(tag[nt], "massDMpart");
+      addr[nt] = &All.massDMpart;
+      id[nt++] = REAL;
+#endif
+      strcpy(tag[nt], "BlackHoleFeedbackFactor");
+      addr[nt] = &All.BlackHoleFeedbackFactor;
+      id[nt++] = REAL;
+#endif /* BLACK_HOLES */
+
+
+run.c:
+blackhole_accretion(); (267)
+BH seeding based on haloes... (271-328)
+CPU log... (1055)
+check BHID PID consistency... (1258-1268)
+
+void blackhole_accretion(void):
+for(i = 0; i < NumPart; i++) P[i].SwallowID = 0;
+blackhole_start(); // blackhole_util.c
+blackhole_environment_loop(); // blackhole_environment.c
+blackhole_properties_loop(); 
+	set_blackhole_long_range_rp( i,  n); // ifdef BH_PHOTONMOMENTUM, BH_BAL_WINDS
+	set_blackhole_mdot(i, n, dt);
+	set_blackhole_drag(i, n, dt);
+	set_blackhole_new_mass(i, n, dt);
+blackhole_feed_loop(); // blackhole_feed.c
+blackhole_swallow_and_kick_loop(); // blackhole_swallow_and_kick.c
+blackhole_final_loop(); // Here the BH mass and particle mass are updated.
+blackhole_end(); // blackhole_util.c
+for(i = 0; i < NumPart; i++) P[i].SwallowID = 0;
+
+
+io.c:
+IO_BHMASS, IO_BHMDOT (, IO_BHMASSALPHA, IO_BHPROGS)... (816-902)
+
+
+structure/fof.c (BH seeding routine):
+fof_fof():
+fof_make_black_holes(); (407, 1965-2178)

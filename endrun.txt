@@ -1,0 +1,540 @@
+./begrun.c:
+  166 :         endrun(1);
+  546 :       endrun(1);
+  554 :       endrun(1);
+  561 :       endrun(1);
+  575 :       endrun(1);
+  582 :       endrun(1);
+  589 :       endrun(1);
+  596 :       endrun(1);
+  603 :       endrun(1);
+  612 :         endrun(1);
+  619 :         endrun(1);
+  626 :         endrun(1);
+  633 :         endrun(1);
+  640 :         endrun(1);
+  647 :         endrun(1);
+  716 :       endrun(1);
+  725 :       endrun(1);
+  734 :       endrun(1);
+  743 :       endrun(1);
+  752 :       endrun(1);
+  758 :       endrun(1);
+  768 :       endrun(1);
+  778 :         endrun(1);
+  786 :         endrun(1);
+  794 :         endrun(1);
+  802 :         endrun(1);
+  812 :       endrun(1);
+  821 :       endrun(1);
+  830 :       endrun(1);
+  840 :       endrun(1);
+  957 :       endrun(0);
+  964 :       endrun(0);
+  971 :       endrun(0);
+  978 :       endrun(0);
+ 2100 :         endrun(1);
+ 2106 :         endrun(1);
+ 2112 :         endrun(1);
+ 2118 :         endrun(1);
+ 2124 :         endrun(1);
+ 2131 :         endrun(1);
+ 2138 :         endrun(1);
+ 2146 :         endrun(1);
+ 2152 :         endrun(1);
+ 2160 :         endrun(1);
+ 2169 :         endrun(1);
+ 2175 :         endrun(1);
+ 2182 :         endrun(1);
+ 2190 :             endrun(1);
+ 2198 :         endrun(1);
+ 2205 :             endrun(1);
+ 2218 :         endrun(0);
+ 2225 :         endrun(0);
+ 2235 :     endrun(0);
+ 2247 :     endrun(0);
+ 2259 :     endrun(0);
+ 2269 :     endrun(0);
+ 2279 :     endrun(0);
+ 2327 : 	      endrun(13);
+ 2357 :       endrun(555);
+ 2370 :       endrun(556);
+ 2404 : 		  endrun(8765);
+./cooling/cooling.c:
+  274 : //   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+  380 :       endrun(10);
+  565 : //       endrun(11);
+  645 : 	endrun(12);
+  813 :       endrun(13);
+ 2320 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+ 2331 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 2343 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+ 2354 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 2401 :       endrun(456);
+./cooling/cooling.c.orig:
+  251 :   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+  355 :       endrun(10);
+  501 :       endrun(11);
+  602 : 	endrun(12);
+  770 :       endrun(13);
+ 1281 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+ 1292 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 1304 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+ 1315 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 1362 :       endrun(456);
+./cooling/cooling_test.c:
+  275 : //   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+  382 :       endrun(10);
+  549 : //       endrun(11);
+  630 : 	endrun(12);
+  798 :       endrun(13);
+ 2239 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+ 2250 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 2262 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+ 2273 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+ 2320 :       endrun(456);
+./cooling/grackle.c:
+  104 :                 endrun(ENDRUNVAL);
+  144 :                 endrun(ENDRUNVAL);
+  160 :                 endrun(ENDRUNVAL);
+  176 :                 endrun(ENDRUNVAL);
+  192 :                 endrun(ENDRUNVAL);
+  210 :                 endrun(ENDRUNVAL);
+  225 :                 endrun(ENDRUNVAL);
+  238 :                 endrun(ENDRUNVAL);
+  250 :                 endrun(ENDRUNVAL);
+./domain.c:
+  174 :             endrun(112411);
+  183 :                 endrun(112413);
+  369 : 	      endrun(781);
+  390 : 	  endrun(111111);
+  399 : 	    endrun(111113);
+  480 :     endrun(131231);
+  611 : 	  endrun(0);
+  713 : 	  endrun(1223);
+  957 : 	endrun(987654);
+ 1176 : 	  endrun(991001);
+ 1359 :       endrun(52097);
+ 1465 :     endrun(787877);
+ 1471 : 	endrun(987655);
+ 1478 :       endrun(787878);
+ 1482 :     endrun(787879);
+ 2030 :     endrun(212);
+ 2323 : 		    endrun(1013);
+ 2575 : 	endrun(123);
+ 2746 :     endrun(1222);
+ 2905 :     endrun(112);
+ 3155 : 	    endrun(88);
+ 3181 :     endrun(89);
+./endrun.txt:
+    2 :   166 :         endrun(1);
+    3 :   546 :       endrun(1);
+    4 :   554 :       endrun(1);
+    5 :   561 :       endrun(1);
+    6 :   575 :       endrun(1);
+    7 :   582 :       endrun(1);
+    8 :   589 :       endrun(1);
+    9 :   596 :       endrun(1);
+   10 :   603 :       endrun(1);
+   11 :   612 :         endrun(1);
+   12 :   619 :         endrun(1);
+   13 :   626 :         endrun(1);
+   14 :   633 :         endrun(1);
+   15 :   640 :         endrun(1);
+   16 :   647 :         endrun(1);
+   17 :   716 :       endrun(1);
+   18 :   725 :       endrun(1);
+   19 :   734 :       endrun(1);
+   20 :   743 :       endrun(1);
+   21 :   752 :       endrun(1);
+   22 :   758 :       endrun(1);
+   23 :   768 :       endrun(1);
+   24 :   778 :         endrun(1);
+   25 :   786 :         endrun(1);
+   26 :   794 :         endrun(1);
+   27 :   802 :         endrun(1);
+   28 :   812 :       endrun(1);
+   29 :   821 :       endrun(1);
+   30 :   830 :       endrun(1);
+   31 :   840 :       endrun(1);
+   32 :   957 :       endrun(0);
+   33 :   964 :       endrun(0);
+   34 :   971 :       endrun(0);
+   35 :   978 :       endrun(0);
+   36 :  2100 :         endrun(1);
+   37 :  2106 :         endrun(1);
+   38 :  2112 :         endrun(1);
+   39 :  2118 :         endrun(1);
+   40 :  2124 :         endrun(1);
+   41 :  2131 :         endrun(1);
+   42 :  2138 :         endrun(1);
+   43 :  2146 :         endrun(1);
+   44 :  2152 :         endrun(1);
+   45 :  2160 :         endrun(1);
+   46 :  2169 :         endrun(1);
+   47 :  2175 :         endrun(1);
+   48 :  2182 :         endrun(1);
+   49 :  2190 :             endrun(1);
+   50 :  2198 :         endrun(1);
+   51 :  2205 :             endrun(1);
+   52 :  2218 :         endrun(0);
+   53 :  2225 :         endrun(0);
+   54 :  2235 :     endrun(0);
+   55 :  2247 :     endrun(0);
+   56 :  2259 :     endrun(0);
+   57 :  2269 :     endrun(0);
+   58 :  2279 :     endrun(0);
+   59 :  2327 : 	      endrun(13);
+   60 :  2357 :       endrun(555);
+   61 :  2370 :       endrun(556);
+   62 :  2404 : 		  endrun(8765);
+   64 :   274 : //   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+   65 :   380 :       endrun(10);
+   66 :   565 : //       endrun(11);
+   67 :   645 : 	endrun(12);
+   68 :   813 :       endrun(13);
+   69 :  2320 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+   70 :  2331 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+   71 :  2343 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+   72 :  2354 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+   73 :  2401 :       endrun(456);
+   75 :   251 :   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+   76 :   355 :       endrun(10);
+   77 :   501 :       endrun(11);
+   78 :   602 : 	endrun(12);
+   79 :   770 :       endrun(13);
+   80 :  1281 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+   81 :  1292 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+   82 :  1304 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+   83 :  1315 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+   84 :  1362 :       endrun(456);
+   86 :   275 : //   if( lognH!=lognH || logTold!=logTold ) endrun(5801);*/
+   87 :   382 :       endrun(10);
+   88 :   549 : //       endrun(11);
+   89 :   630 : 	endrun(12);
+   90 :   798 :       endrun(13);
+   91 :  2239 :         printf(" Cannot read species cooling table in file `%s'\n", fname); endrun(456);}
+   92 :  2250 :      printf(" Cannot read species (He) cooling table in file `%s'\n", fname); endrun(456);}
+   93 :  2262 :             printf(" Cannot read species 1 cooling table in file `%s'\n", fname); endrun(456);}
+   94 :  2273 :          printf(" Cannot read species 1 (He) cooling table in file `%s'\n", fname); endrun(456);}
+   95 :  2320 :       endrun(456);
+   97 :   104 :                 endrun(ENDRUNVAL);
+   98 :   144 :                 endrun(ENDRUNVAL);
+   99 :   160 :                 endrun(ENDRUNVAL);
+  100 :   176 :                 endrun(ENDRUNVAL);
+  101 :   192 :                 endrun(ENDRUNVAL);
+  102 :   210 :                 endrun(ENDRUNVAL);
+  103 :   225 :                 endrun(ENDRUNVAL);
+  104 :   238 :                 endrun(ENDRUNVAL);
+  105 :   250 :                 endrun(ENDRUNVAL);
+  107 :   174 :             endrun(112411);
+  108 :   183 :                 endrun(112413);
+  109 :   369 : 	      endrun(781);
+  110 :   390 : 	  endrun(111111);
+  111 :   399 : 	    endrun(111113);
+  112 :   480 :     endrun(131231);
+./galaxy_sf/blackholes/blackhole_util.c:
+  284 :                     endrun(12312);
+  407 :                     endrun(12312);
+./galaxy_sf/blackholes/test/blackhole_util.c:
+  287 :                     endrun(12312);
+  410 :                     endrun(12312);
+./galaxy_sf/dm_dispersion_hsml.c:
+  214 :                     endrun(111008);
+  504 :                 endrun(1155);
+./galaxy_sf/mechanical_fb.c:
+  488 :                 endrun(116608);
+./galaxy_sf/metals.c:
+  102 : 	    endrun(2384);
+  165 :     if( NUM_METAL_SPECIES < 10 ) endrun (7804);	// must be tracking full 11 metal species
+  242 : 	else endrun(7803);
+  365 :       if( P[i].Mass < 0.2*All.OrigGasMass/GALSF_GENERATIONS ) endrun(7805);  // should never have this much mass loss
+./galaxy_sf/popIII.c:
+  418 :     endrun(1);
+./galaxy_sf/popIII.c.orig:
+  306 :     endrun(1);
+./galaxy_sf/sfr_eff.c:
+  792 : 			  endrun(8888);
+ 1418 : 	  endrun(1);
+./gravity/ags_hsml.c:
+  254 : 		  endrun(111008);
+  689 :                 endrun(1155);
+./gravity/cosmology.c:
+  150 : 		  endrun(0);
+  175 : 	  endrun(0);
+  184 : 	  endrun(0);
+  306 :       endrun(0);
+./gravity/forcetree.c:
+  392 :                         endrun(1);
+  478 :                         endrun(11);
+ 1270 :             endrun(6767);		/* may not happen */
+ 1451 :                 endrun(131231231);
+ 1584 :         endrun(444);
+ 3111 :                                     endrun(13002);	/* in this case, the buffer is too small to process even a single particle */
+ 3446 :                                     endrun(13001);	/* in this case, the buffer is too small to process even a single particle */
+ 3574 :         endrun(3);
+ 3583 :         endrun(3);
+./gravity/gravtree.c:
+  350 :                         endrun(114408);
+./gravity/longrange.c:
+  148 :     endrun(68686);
+  191 :     endrun(68687);
+  263 :     endrun(68688);
+./gravity/pm_nonperiodic.c:
+  274 :       endrun(1);
+  285 :       endrun(1);
+  296 :       endrun(1);
+  307 :       endrun(1);
+  334 :       endrun(1);
+  343 :       endrun(1);
+  351 :       endrun(1);
+  358 :       endrun(1);
+  366 :       endrun(1);
+./gravity/pm_periodic.c:
+  154 :       endrun(1);
+  161 :       endrun(1);
+  169 :       endrun(1);
+  176 :       endrun(1);
+  184 :       endrun(1);
+ 3619 : 	      endrun(11);
+./gravity/potential.c:
+  276 :     endrun(88686);
+  287 :     endrun(88687);
+  297 :     endrun(88688);
+./hydro/density.c:
+  376 : 		  endrun(112208);
+  942 :                 endrun(1155);
+./hydro/gradients.c:
+  655 :                     endrun(113308);
+./hydro/hydra_master.c:
+  957 :                 endrun(115508);
+./init.c:
+   53 :         endrun(0);
+   60 :         endrun(0);
+   68 :         endrun(0);
+   76 :         endrun(0);
+  108 :             endrun(0);
+  181 :         endrun(78787);
+  308 :         endrun(0);
+  322 :         endrun(0);
+ 1108 :         endrun(0);
+ 1132 :         endrun(0);
+ 1142 :         endrun(0);
+ 1157 :         endrun(0);
+ 1195 :         endrun(1);
+ 1396 :         endrun(8);
+ 1424 :             endrun(12);
+ 1433 :             endrun(13);
+./io.c:
+   65 :             endrun(0);
+   83 :             endrun(2);
+   92 :             endrun(0);
+   98 :             endrun(0);
+  105 :             endrun(0);
+  169 :         endrun(0);
+ 1708 :             endrun(213);
+ 2054 :             endrun(214);
+ 2292 :             endrun(215);
+ 2602 :             endrun(216);
+ 2606 :     endrun(212);
+ 3694 :             endrun(217);
+ 4125 :             endrun(218);
+ 4289 :                 endrun(123);
+ 4317 :             endrun(1234);
+ 4777 :             endrun(777);
+ 4804 :         endrun(778);
+./main.c:
+   86 :       endrun(0);
+./merge_split.c:
+  252 :         endrun(8888);
+  647 :                 if(j >= NumPart) endrun(181170); /* if that j is too large, exit with error */
+./ngb.c:
+   74 :       endrun(124);
+  122 :       endrun(124);
+  241 : 		endrun(23131);
+  255 : 			endrun(13003);	/* in this case, the buffer is too small to process even a single particle */
+  425 : 		endrun(12312);
+  626 : 		endrun(12312);
+  642 : 			    endrun(13004);	/* in this case, the buffer is too small to process even a single particle */
+  809 : 		endrun(12312);
+ 1015 : 		endrun(12312);
+ 1031 : 			    endrun(13005);	/* in this case, the buffer is too small to process even a single particle */
+ 1225 : 		endrun(123192);
+ 1239 : 			endrun(13005);	/* in this case, the buffer is too small to process even a single particle */
+ 1379 :                     endrun(12312);
+ 1395 :                                 endrun(13004);	/* in this case, the buffer is too small to process even a single particle */
+ 1552 :                     endrun(12312);
+ 1755 :                     endrun(12312);
+ 1958 :                     endrun(12312);
+./nuclear/nuclear_network.c:
+  432 :       endrun(1);
+  482 :       endrun(2);
+  530 :       endrun(3);
+  546 :       endrun(4);
+  593 : 			  endrun(5);
+  642 :       endrun(8);
+  744 :       endrun(6);
+ 1076 : 		  endrun(9);
+ 1204 : 	endrun(11);
+./nuclear/nuclear_network.h:
+   38 :         endrun(200);
+   50 :         endrun(201);
+./nuclear/nuclear_network_solver.c:
+  218 :   endrun(70);
+  258 :       endrun(1001);
+  684 :       endrun(1002);
+  694 :       endrun(1003);
+  707 :       endrun(1004);
+  731 : 	  endrun(1005);
+  753 :       endrun(1006);
+./proto.h:
+  598 : void endrun(int);
+./radiation/rt_CGmethod.c:
+  290 :                 endrun(116608);
+  429 :                     endrun(11111111);
+./radiation/rt_chem.c:
+  238 :                 endrun(111);
+  253 :                 endrun(333);
+  292 :                 endrun(333);
+  302 :                 endrun(333);
+  419 :                 endrun(333);
+  458 :                 endrun(333);
+  468 :                 endrun(333);
+./radiation/rt_source_injection.c:
+  154 :                 endrun(116608);
+./read_ic.c:
+  745 :             endrun(220);
+  783 :                 endrun(123);
+  805 :                 endrun(890);
+  844 :         endrun(11);
+  852 :         endrun(10);
+  896 :             endrun(2);
+  957 :                 endrun(172);
+  969 :         endrun(173);
+ 1104 :                                     endrun(1313);
+ 1252 :                                 endrun(1889);
+ 1349 :         endrun(0);
+ 1428 :     endrun(0);
+ 1468 :                 endrun(1239);
+ 1486 :                 endrun(890);
+ 1658 :         endrun(1890);
+./restart.c:
+   81 :         endrun(2131);
+  104 : 		      endrun(7870);
+  113 : 		  endrun(7878);
+  163 : 		  endrun(16);
+  176 : 	      endrun(22);
+  198 : 		  endrun(222);
+  248 : 	      endrun(23);
+  259 : 		  endrun(2222);
+  296 : 		  endrun(221);
+./run.c:
+  665 : 	      endrun(13123);
+  673 : 	      endrun(13123);
+  692 : 	      endrun(110);
+  718 : 	      endrun(111);
+ 1217 : 		     endrun(712401);
+ 1227 : 		     endrun(712402);
+ 1255 : 	  endrun(712411);
+ 1265 : 	    endrun(712413);
+./sidm/sidm_core.c:
+  214 :                 endrun(1);
+  230 :                 endrun(1);
+  246 :                 endrun(1);
+  309 :         endrun(2);
+  319 :             endrun(2);
+./solids/grain_physics.c:
+  557 :              endrun(1155);
+  785 :                     endrun(12312);
+  801 :                                 endrun(13004);	/* in this case, the buffer is too small to process even a single particle */
+./structure/fof.c:
+  109 :   endrun(0);
+  126 :       endrun(0);
+  138 :   endrun(0);
+  175 :   endrun(0);
+  297 : 	  endrun(8812);
+  377 : 	    endrun(78);
+  381 : 	endrun(123);
+  793 : 			endrun(87654);
+  976 : 	    endrun(7973);
+  980 : 	endrun(123);
+  983 : 	endrun(124);
+  998 : 	    endrun(797831);
+ 1206 : 	    endrun(797890);
+ 1276 :     endrun(876889);
+ 1337 :       endrun(123123);
+ 1354 : 	    endrun(7297890);
+ 1402 : 	    endrun(78);
+ 1406 : 	endrun(1313);
+ 1435 :       endrun(12);
+ 1468 :       endrun(241931);
+ 1507 :       endrun(1183);
+ 1605 :       endrun(1184);
+ 1842 : 	      endrun(1159);
+ 2103 : 	endrun(7772);
+ 2113 : 	  endrun(8890);
+ 2407 : 	  endrun(0);
+ 2461 : 	      endrun(0);
+ 2647 :       endrun(0);
+ 2880 : 	  endrun(11831);
+ 2942 : 		  endrun(11831);
+ 3028 : 		  endrun(1184132);
+ 3132 : 		  endrun(11831);
+ 3147 : 		  endrun(0);
+ 3196 : 		  endrun(1184132);
+ 3262 :     endrun(8881);
+ 3303 :     endrun(1231);
+ 3379 :     endrun(543);
+ 3394 :   endrun(0);
+./structure/fofrad.c:
+  235 :       endrun(1);
+  245 :       endrun(1);
+  270 : 	//endrun(6522);
+  342 : 	//endrun(6523);
+./structure/lineofsight.c:
+  199 : 	  endrun(112);
+  238 : 	  endrun(113);
+  314 : 		      endrun(89);
+./structure/twopoint.c:
+  316 : 	  endrun(1323);
+  444 : 		endrun(12312);
+  460 : 			    endrun(13004);	/* in this case, the buffer is too small to process even a single particle */
+./system/allocate.c:
+   58 : 	  endrun(1);
+   74 : 	  endrun(1);
+   95 : 	  endrun(1);
+./system/mpi_util.c:
+  148 :         endrun(3);
+  164 :         endrun(6);
+  182 :             endrun(6);
+  194 :             endrun(6);
+  393 :             endrun(10);
+  422 :         endrun(3);
+./system/mymalloc.c:
+   60 :       endrun(122);
+  152 :       endrun(813);
+  161 :       endrun(812);
+  197 :       endrun(816);
+  206 :       endrun(817);
+  234 :     endrun(76878);
+  242 :       endrun(814);
+  257 :     endrun(768728);
+  274 :       endrun(8152);
+  288 : 	    endrun(81252);
+  341 :     endrun(76879);
+  349 :       endrun(815);
+  362 :       endrun(812);
+  387 :     endrun(768799);
+  404 :       endrun(8151);
+  418 : 	    endrun(8152);
+  433 :       endrun(812);
+./system/system.c:
+   34 :  *  that all processors call endrun().
+   36 : void endrun(int ierr)
+   40 :         printf("task %d: endrun called with an error level of %d\n\n\n", ThisTask, ierr);
+./timestep.c:
+  886 :         endrun(888);
+  911 :         endrun(818);
+./turb/turb_powerspectra.c:
+ 1078 : 		endrun(12312);
+ 1094 : 			    endrun(13005);	/* in this case, the buffer is too small to process even a single particle */

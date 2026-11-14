@@ -1,0 +1,7 @@
+
+
+Changed cutout unit from kpc to pc, so increase softening by 1e3.
+
+Split the particles by some factor, so decrease softneing by that factor, eg 100.
+
+Then the cutout softening change is *1e3/1e2 = *10
