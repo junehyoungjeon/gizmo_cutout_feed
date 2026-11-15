@@ -129,6 +129,9 @@ static struct blackholedata_out
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
     MyFloat BH_angle_weighted_kernel_sum;
 #endif
+#ifdef BH_FB_CONE
+    MyFloat BH_fb_sum[3];
+#endif
 #ifdef BH_BUBBLES
     MyFloat BH_Mass_bubbles;
     MyFloat BH_Mass_ini;

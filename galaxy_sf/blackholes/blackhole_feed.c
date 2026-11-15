@@ -653,6 +653,7 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
                         }
   }
 #endif
+#endif
                             
                         } // if(P[j].Type == 0)
                         
@@ -690,7 +691,8 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
         BlackholeTempInfo[P[target].IndexMapToTempStruc].BH_angle_weighted_kernel_sum += BH_angle_weighted_kernel_sum;  /* need to correct target index */
 #endif
 #ifdef BH_FB_CONE
-        {int kk; for(kk=0;kk<3;kk++) BlackholeDataResult[target].BH_fb_sum[kk] = fb_sum[kk];}
+        //{int kk; for(kk=0;kk<3;kk++) BlackholeDataResult[target].BH_fb_sum[kk] = fb_sum[kk];}
+        {int kk; for(kk=0;kk<3;kk++) BlackholeTempInfo[P[target].IndexMapToTempStruc].BH_fb_sum[kk] += fb_sum[kk];}
 #endif
     }
     else
