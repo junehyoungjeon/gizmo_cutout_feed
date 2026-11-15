@@ -406,6 +406,10 @@ BH_R2=4    # define the radius range in softening length (or hsml) for specific 
 #BH_HII_HEATING                 # photo-ionization feedback from BH (needs GALSF_FB_HII_HEATING)
 #BH_COMPTON_HEATING             # enable Compton heating/cooling from BHs in cooling function (needs BH_PHOTONMOMENTUM)
 BH_THERMALFEEDBACK            # couple a fraction of the BH luminosity into surrounding gas as thermal energy (DiMatteo/Springel/Hernquist model)
+BH_FB_CONE=30 # half opening angle of the feedback cone in deg
+BH_FB_AXIS_X=0
+BH_FB_AXIS_Y=0
+BH_FB_AXIS_Z=1      # cone points along +z; use -1 for -z, or any vector (it gets normalized)
 #BH_BAL_KICK                   # do BAL winds with stochastic particle kicks at specified velocity (instead of continuous wind solution - requires BH_SWALLOWGAS - )
 #BH_WIND_BETA=0.5              # power-law index for the scaling between wind velocity and BH mass: v_kick = v0 * (bh_mass/BH_MASS_WIND)**BH_WIND_BETA
 #BH_MASS_WIND=1e4

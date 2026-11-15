@@ -110,6 +110,14 @@ void blackhole_feed_loop(void)
             BlackholeDataIn[j].Dt = P[place].dt_step * All.Timebase_interval / All.cf_hubble_a;
 #endif
             BlackholeDataIn[j].ID = P[place].ID;
+            #ifdef BH_FB_CONE
+            {
+                double Jv[3], nv[3]; int kk;
+                for(kk=0;kk<3;kk++) Jv[kk] = BlackholeTempInfo[P[place].IndexMapToTempStruc].Jgas_in_Kernel[kk];
+                bh_fb_unit_axis(Jv, nv);
+                for(kk=0;kk<3;kk++) BlackholeDataIn[j].BH_fb_axis[kk] = nv[kk];
+            }
+#endif
             memcpy(BlackholeDataIn[j].NodeList,DataNodeList[DataIndexTable[j].IndexGet].NodeList, NODELISTLENGTH * sizeof(int));
         }
         
@@ -173,6 +181,9 @@ void blackhole_feed_loop(void)
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
             BlackholeTempInfo[P[place].IndexMapToTempStruc].BH_angle_weighted_kernel_sum += BlackholeDataOut[j].BH_angle_weighted_kernel_sum;
 #endif
+#ifdef BH_FB_CONE
+            {int kk; for(kk=0;kk<3;kk++) BlackholeTempInfo[P[place].IndexMapToTempStruc].BH_fb_sum[kk] += BlackholeDataOut[j].BH_fb_sum[kk];}
+#endif
         }
         
         myfree(BlackholeDataOut);
@@ -221,6 +232,9 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
     
 #ifdef BH_THERMALFEEDBACK
     double energy;
+#endif
+#ifdef BH_FB_CONE
+    double fb_axis[3]={0,0,0}, fb_sum[3]={0,0,0}, fb_c, fb_f; int fb_axis_ok=0;
 #endif
 #ifdef BH_ALPHADISK_ACCRETION
     MyFloat bh_mass_alphadisk;
@@ -297,7 +311,15 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
 #endif
 #endif
     }
-    
+    #ifdef BH_FB_CONE
+    if(mode == 0) {
+        double Jv[3]; for(k=0;k<3;k++) Jv[k] = BlackholeTempInfo[P[target].IndexMapToTempStruc].Jgas_in_Kernel[k];
+        bh_fb_unit_axis(Jv, fb_axis);
+    } else {
+        for(k=0;k<3;k++) fb_axis[k] = BlackholeDataGet[target].BH_fb_axis[k];
+    }
+    fb_axis_ok = (fb_axis[0]*fb_axis[0] + fb_axis[1]*fb_axis[1] + fb_axis[2]*fb_axis[2] > 0.5);
+#endif
     if((mass<0)||(h_i<=0)) return -1;
     
     /* initialize variables before SPH loop is started */
@@ -596,6 +618,22 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
 #endif
                             
 #ifdef BH_THERMALFEEDBACK
+#ifdef BH_FB_CONE
+                            if(P[j].Mass > 0 && r > 0)
+                            {
+                                fb_f = 1.0;
+                                if(fb_axis_ok)
+                                {
+                                    //fb_c = 0; for(k=0;k<3;k++) fb_c += (dpos[k]/r) * fb_axis[k];
+                                    //fb_f = bh_cone_weight(fabs(fb_c));
+                                    fb_c = 0; for(k=0;k<3;k++) fb_c -= (dpos[k]/r) * fb_axis[k];   /* minus: dpos points gas -> BH */
+                                    fb_f = bh_cone_weight(fb_c);                                    /* no fabs */
+                                }
+                                fb_sum[1] += P[j].Mass * wk;
+                                if(fb_f > 0) {fb_sum[0] += P[j].Mass * wk * fb_f; fb_sum[2] += 1.0;}
+                            }
+#else
+
 #ifdef BH_FDBK_Z_THRESH
   if (All.Time>1.0/(1.0+BH_FDBK_Z_THRESH))
 #endif
@@ -651,11 +689,17 @@ int blackhole_feed_evaluate(int target, int mode, int *nexport, int *nSend_local
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
         BlackholeTempInfo[P[target].IndexMapToTempStruc].BH_angle_weighted_kernel_sum += BH_angle_weighted_kernel_sum;  /* need to correct target index */
 #endif
+#ifdef BH_FB_CONE
+        {int kk; for(kk=0;kk<3;kk++) BlackholeDataResult[target].BH_fb_sum[kk] = fb_sum[kk];}
+#endif
     }
     else
     {
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
         BlackholeDataResult[target].BH_angle_weighted_kernel_sum = BH_angle_weighted_kernel_sum;
+#endif
+#ifdef BH_FB_CONE
+        {int kk; for(kk=0;kk<3;kk++) BlackholeDataResult[target].BH_fb_sum[kk] = fb_sum[kk];}
 #endif
     }
     return 0;

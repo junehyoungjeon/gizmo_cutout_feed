@@ -105,6 +105,17 @@ void blackhole_swallow_and_kick_loop(void)
             BlackholeDataIn[j].BH_disk_hr = P[place].BH_disk_hr;
             BlackholeDataIn[j].BH_angle_weighted_kernel_sum = BlackholeTempInfo[P[place].IndexMapToTempStruc].BH_angle_weighted_kernel_sum;
 #endif
+#ifdef BH_FB_CONE
+            {
+                double Jv[3], nv[3]; int kk;
+                for(kk=0;kk<3;kk++) {
+                    Jv[kk] = BlackholeTempInfo[P[place].IndexMapToTempStruc].Jgas_in_Kernel[kk];
+                    BlackholeDataIn[j].BH_fb_sum[kk] = BlackholeTempInfo[P[place].IndexMapToTempStruc].BH_fb_sum[kk];
+                }
+                bh_fb_unit_axis(Jv, nv);
+                for(kk=0;kk<3;kk++) BlackholeDataIn[j].BH_fb_axis[kk] = nv[kk];
+            }
+#endif
             BlackholeDataIn[j].Mdot = BPP(place).BH_Mdot;
 #ifndef WAKEUP
             BlackholeDataIn[j].Dt = (P[place].TimeBin ? (1 << P[place].TimeBin) : 0) * All.Timebase_interval / All.cf_hubble_a;
@@ -256,7 +267,7 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
     MyFloat bh_mass_alphadisk;     // DAA: we need bh_mass_alphadisk for BH_BAL_KICK winds below
 #endif
 #endif
-#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND)
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND) || defined(BH_FB_CONE)
     MyFloat mdot,dt;
 #endif
     
@@ -268,6 +279,10 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
     double BH_angle_weighted_kernel_sum, mom_wt;
     MyFloat theta,BH_disk_hr,kernel_zero,dwk;
     kernel_main(0.0,1.0,1.0,&kernel_zero,&dwk,-1);
+#endif
+#ifdef BH_FB_CONE
+    double fb_axis[3]={0,0,0}, fb_sum[3]={0,0,0}, fb_E=0, fb_norm=0, fb_f, fb_c, fb_u, fb_wk, fb_dwk;
+    double fb_dp[3], fb_r, fb_r2, fb_h2, fb_hinv, fb_hinv3, fb_med, fb_eta; int fb_axis_ok=0, fb_iso=0;
 #endif
 #ifdef BH_BUBBLES
     MyLongDouble accreted_BH_mass_bubbles = 0;
@@ -302,7 +317,7 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
 #endif
 #endif
         bh_mass = BPP(target).BH_Mass;
-#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND)
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND) || defined(BH_FB_CONE)
         mdot = BPP(target).BH_Mdot;
 #ifndef WAKEUP
         dt = (P[target].TimeBin ? (1 << P[target].TimeBin) : 0) * All.Timebase_interval / All.cf_hubble_a;
@@ -339,7 +354,7 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
 #endif
 #endif
         bh_mass = BlackholeDataGet[target].BH_Mass;
-#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND)
+#if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(ROMULUS_WIND) || defined(BH_FB_CONE)
         mdot = BlackholeDataGet[target].Mdot;
         dt = BlackholeDataGet[target].Dt;
 #endif
@@ -351,7 +366,34 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
         BH_angle_weighted_kernel_sum = BlackholeDataGet[target].BH_angle_weighted_kernel_sum;
 #endif
     }
-
+#ifdef BH_FB_CONE
+    if(mode == 0) {
+        double Jv[3];
+        for(k=0;k<3;k++) {
+            Jv[k]     = BlackholeTempInfo[P[target].IndexMapToTempStruc].Jgas_in_Kernel[k];
+            fb_sum[k] = BlackholeTempInfo[P[target].IndexMapToTempStruc].BH_fb_sum[k];
+        }
+        bh_fb_unit_axis(Jv, fb_axis);
+    } else {
+        for(k=0;k<3;k++) {fb_axis[k] = BlackholeDataGet[target].BH_fb_axis[k]; fb_sum[k] = BlackholeDataGet[target].BH_fb_sum[k];}
+    }
+    fb_axis_ok = (fb_axis[0]*fb_axis[0] + fb_axis[1]*fb_axis[1] + fb_axis[2]*fb_axis[2] > 0.5);
+    fb_iso  = (!fb_axis_ok) || (fb_sum[2] < BH_FB_CONE_NMIN) || (fb_sum[0] <= 0);
+    fb_norm = fb_iso ? fb_sum[1] : fb_sum[0];
+    fb_E = 0;
+    if(fb_norm > 0 && All.BlackHoleFeedbackFactor > 0 && dt > 0 && mdot > 0
+#ifdef BH_FDBK_Z_THRESH
+       && (All.Time > 1.0/(1.0+BH_FDBK_Z_THRESH))
+#endif
+      )
+    {
+        fb_med = (4*M_PI*GRAVITY*Clight*PROTONMASS/(All.BlackHoleRadiativeEfficiency*Clight*Clight*THOMPSON))*bh_mass*All.UnitTime_in_s/All.HubbleParam;
+        fb_eta = mdot / fb_med;
+        fb_E = All.BlackHoleFeedbackFactor*All.BlackHoleRadiativeEfficiency * mdot*dt
+               * pow(Clight/All.UnitVelocity_in_cm_per_s, 2) * (All.BH_Arad*fb_eta)/(1. + All.BH_Arad*fb_eta);
+    }
+    fb_h2 = h_i*h_i; fb_hinv = 1./h_i; fb_hinv3 = fb_hinv*fb_hinv*fb_hinv;
+#endif
 #ifdef BH_BAL_KICK
     bh_mass_withdisk = bh_mass;
 #ifdef BH_ALPHADISK_ACCRETION
@@ -402,7 +444,34 @@ int blackhole_swallow_and_kick_evaluate(int target, int mode, int *nexport, int 
             for(n = 0; n < numngb; n++)
             {
                 j = Ngblist[n];
-                
+#ifdef BH_FB_CONE
+                if(fb_E > 0 && P[j].Type == 0 && P[j].Mass > 0)
+                {
+                    for(k=0;k<3;k++) fb_dp[k] = pos[k] - P[j].Pos[k];
+#ifdef PERIODIC
+                    NEAREST_XYZ(fb_dp[0],fb_dp[1],fb_dp[2],1);
+#endif
+                    fb_r2 = fb_dp[0]*fb_dp[0] + fb_dp[1]*fb_dp[1] + fb_dp[2]*fb_dp[2];
+                    if(fb_r2 > 0 && fb_r2 < fb_h2)
+                    {
+                        fb_r = sqrt(fb_r2); fb_f = 1.0;
+                        if(!fb_iso)
+                        {
+                            //fb_c = 0; for(k=0;k<3;k++) fb_c += (fb_dp[k]/fb_r) * fb_axis[k];
+                            //fb_f = bh_cone_weight(fabs(fb_c));
+                            fb_c = 0; for(k=0;k<3;k++) fb_c -= (fb_dp[k]/fb_r) * fb_axis[k];
+                            fb_f = bh_cone_weight(fb_c);
+                        }
+                        if(fb_f > 0)
+                        {
+                            fb_u = fb_r * fb_hinv;
+                            kernel_main(fb_u, fb_hinv3, fb_hinv*fb_hinv3, &fb_wk, &fb_dwk, -1);
+                            SphP[j].Injected_BH_Energy += fb_E * P[j].Mass * fb_wk * fb_f / fb_norm;
+                        }
+                    }
+                }
+#endif
+
                 /* we've found a particle to be swallowed.  This could be a BH merger, DM particle, or baryon w/ feedback */
                 // DAA: make sure it has not been accreted previously
                 if(P[j].SwallowID == id && P[j].Mass > 0)  

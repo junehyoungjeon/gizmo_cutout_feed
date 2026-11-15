@@ -11,6 +11,43 @@
  *   to reduce memory usage. Cleanup, de-bugging, and consolidation of routines by Xiangcheng Ma
  *   (xchma@caltech.edu) followed on 05/15/15; re-integrated by PFH.
  */
+
+#ifdef BH_FB_CONE
+#ifndef BH_FB_CONE_NMIN
+#define BH_FB_CONE_NMIN 4
+#endif
+/* unit jet axis from kernel angular momentum; (0,0,0) if undefined.
+   BH_FB_CONE_FLIP selects the -J pole instead of +J */
+static inline void bh_fb_unit_axis(double *J, double *n)
+{
+#ifdef BH_FB_AXIS_X
+    /* fixed axis in the simulation frame; J is ignored */
+    double ax = BH_FB_AXIS_X, ay = BH_FB_AXIS_Y, az = BH_FB_AXIS_Z;
+    double a = sqrt(ax*ax + ay*ay + az*az);
+    if(a > 0) {n[0]=ax/a; n[1]=ay/a; n[2]=az/a;} else {n[0]=n[1]=n[2]=0;}
+#else
+    double a = sqrt(J[0]*J[0] + J[1]*J[1] + J[2]*J[2]);
+#ifdef BH_FB_CONE_FLIP
+    if(a > 0) {n[0]=-J[0]/a; n[1]=-J[1]/a; n[2]=-J[2]/a;} else {n[0]=n[1]=n[2]=0;}
+#else
+    if(a > 0) {n[0]=J[0]/a; n[1]=J[1]/a; n[2]=J[2]/a;} else {n[0]=n[1]=n[2]=0;}
+#endif
+#endif
+}
+/* c = SIGNED cos(angle between r_hat (BH -> gas) and the axis): one cone around +axis only */
+static inline double bh_cone_weight(double c)
+{
+    if(c > 1) c = 1;
+    if(c < -1) c = -1;
+#ifdef BH_FB_CONE_GAUSS
+    double th = acos(c), s = BH_FB_CONE * (M_PI/180.0);   /* th runs 0..pi, so the far hemisphere is suppressed automatically */
+    return exp(-0.5*th*th/(s*s));
+#else
+    return (c >= cos(BH_FB_CONE * (M_PI/180.0))) ? 1.0 : 0.0;
+#endif
+}
+#endif
+
 /* quantities that pass IN to the 'blackhole_evaluate' routines */
 static struct blackholedata_in
 {
@@ -35,6 +72,10 @@ static struct blackholedata_in
     int NodeList[NODELISTLENGTH];
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS) || defined(BH_BAL_KICK_COLLIMATED)
     MyFloat Jgas_in_Kernel[3];
+#endif
+#ifdef BH_FB_CONE
+    MyFloat BH_fb_axis[3];
+    MyFloat BH_fb_sum[3];
 #endif
 #if defined(BH_PHOTONMOMENTUM) || defined(BH_BAL_WINDS)
     MyFloat BH_disk_hr;

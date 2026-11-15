@@ -2641,6 +2641,10 @@ extern struct blackhole_temp_particle_data       // blackholedata_topass
     MyLongDouble GradRho_in_Kernel[3];
     MyFloat BH_angle_weighted_kernel_sum;
 #endif
+#ifdef BH_FB_CONE
+    MyFloat  BH_fb_sum[3];   /* [0]=sum m*W*f (cone), [1]=sum m*W (isotropic), [2]=N in cone; zeroed by memset in blackhole_start */
+#endif
+
 #ifdef BH_DYNFRICTION
     MyFloat DF_mean_vel[3];
     MyFloat DF_rms_vel;
